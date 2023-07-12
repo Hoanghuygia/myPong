@@ -55,7 +55,31 @@ end
 function love.update(dt)
 
     if gameState == 'playState' then
+        ball:update(dt)
+        if (ball.y + ball.dy * dt) < 31 or (ball.y + ball.dy * dt) > 178 then
+            ball.dy = -ball.dy
+        end
+        
+        if ball:isCollide(player1) then
+            ball.dx = -ball.dx * 1.1
+            if ball.dy > 0 then
+                ball.dy = math.random(10,150)
+            else 
+                ball.dy = -math.random(10, 150)
+            end
+        end
 
+        if ball:isCollide(player2) then
+            ball.dx = -ball.dx * 1.1
+            if ball.dy > 0 then
+                ball.dy = math.random(10,150)
+            else 
+                ball.dy = -math.random(10, 150)
+            end
+        end
+    elseif gameState == 'startState' then
+        ball:resetLocation()
+        ball:resetSetup()
     end
         
     --velocity for player1
