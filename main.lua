@@ -56,10 +56,12 @@ function love.update(dt)
 
     if gameState == 'playState' then
         ball:update(dt)
+        --reflect for the two width
         if (ball.y + ball.dy * dt) < 31 or (ball.y + ball.dy * dt) > 178 then
             ball.dy = -ball.dy
         end
-        
+
+        --reflect for the paddle
         if ball:isCollide(player1) then
             ball.dx = -ball.dx * 1.1
             if ball.dy > 0 then
@@ -80,6 +82,9 @@ function love.update(dt)
     elseif gameState == 'startState' then
         ball:resetLocation()
         ball:resetSetup()
+        if player1.dy ~= 0 or player2.dy ~= 0 then --add function that when paddle moves, it automatically transfer into play state
+            gameState = 'playState'
+        end
     end
         
     --velocity for player1
@@ -137,12 +142,13 @@ function drawFiled()
         love.graphics.rectangle('fill', VIRTUAL_WIDTH / 2 - 2, initial_value, 1, 2)
     end
 
-    love.graphics.rectangle('fill', 10, 30, 1, 65)
-    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, 30, 1, 65)
-    love.graphics.rectangle('fill', 10, 115, 1, 65)
-    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, 115, 1, 65)
-    love.graphics.rectangle('fill', 10, 105, 1, 1)
-    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, 105, 1, 1)
+    -- love.graphics.rectangle('fill', 10, 30, 1, 65)
+    -- love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, 30, 1, 65)
+    -- love.graphics.rectangle('fill', 10, 115, 1, 65)
+    -- love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, 115, 1, 65)
+    -- --draw two dot
+    -- love.graphics.rectangle('fill', 10, 105, 1, 1)
+    -- love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, 105, 1, 1)
 end
 
 
