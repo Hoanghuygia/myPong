@@ -27,3 +27,15 @@ function Ball:resetSetup()
     self.dy = math.random(2) == 1 and -100 or 100
     self.dx = math.random(2) == 1 and math.random(-80, -100) or math.random(80, 100)
 end
+
+function Ball:isCollide(paddle)
+    if ((self.x - self.radius) > (paddle.x + paddle.width) or (self.x + self.radius < paddle.x)) then
+        return false
+    end
+
+    if ((self.y + self.radius < paddle.y) or (self.y - self.radius > paddle.y + paddle.height)) then
+        return false
+    end
+
+    return true
+end
