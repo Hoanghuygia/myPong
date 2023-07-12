@@ -22,9 +22,11 @@ function love.load()
 
     math.randomseed(os.time())
 
-    -- smallFont = love.graphics.newFont('font.tft', 8)
-    -- mediumFont = love.graphics.newFont('font.tft', 16)
-    -- BigFont = love.graphics.newFont('font.tft', 32)
+    smallFont = love.graphics.newFont('font.ttf', 8)
+    mediumFont = love.graphics.newFont('font.ttf', 16)
+    BigFont = love.graphics.newFont('font.ttf', 32)
+
+    gameState = 'startState'
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
@@ -38,8 +40,45 @@ function love.load()
 
 end
 
-function love.update()
+function love.keypressed(key)
+    if key == 'escape' then
+        love.event.quit()
+    elseif key == 'enter' or key == 'return' then--tại sao khi để enter thì nó không được mà để return thì nó lại okla ?
+        if gameState == 'playState' then
+            gameState = 'startState'
+        else
+            gameState = 'playState'
+        end
+    end
+end
 
+function love.update(dt)
+
+    if gameState == 'playState' then
+
+    end
+        
+    --velocity for player1
+    if love.keyboard.isDown('w') then 
+        player1.dy = -PADDLE_SPEED
+    elseif love.keyboard.isDown('s') then
+        player1.dy = PADDLE_SPEED
+    else
+        player1.dy = 0
+    end
+
+    --velocity for player2
+    if love.keyboard.isDown('up') then 
+        player2.dy = -PADDLE_SPEED
+    elseif love.keyboard.isDown('down') then
+        player2.dy = PADDLE_SPEED
+    else
+        player2.dy = 0
+    end
+
+    player1:update(dt)
+    player2:update(dt)
+    
 end
 
 function love.draw()
@@ -49,7 +88,8 @@ function love.draw()
     --draw the field
     drawFiled()
 
-    -- love.graphics.printf('Hello Pong', 0, 120, WINDOW_WIDTH, 'center')
+    love.graphics.setFont(smallFont)
+    love.graphics.print('State: '..gameState, 10, 10)
 
     player1:render()
     player2:render()
