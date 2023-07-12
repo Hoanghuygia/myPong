@@ -55,7 +55,10 @@ end
 function love.update(dt)
 
     if gameState == 'playState' then
-
+        ball:update(dt)
+    elseif gameState == 'startState' then
+        ball:resetLocation()
+        ball:resetSetup()
     end
         
     --velocity for player1
