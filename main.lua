@@ -24,11 +24,19 @@ function love.load()
 
     math.randomseed(os.time())
 
-    smallFont = love.graphics.newFont('font.ttf', 8)
+    superSmallFont = love.graphics.newFont('font.ttf', 7)
+    smallFont = love.graphics.newFont('font.ttf', 10)
     mediumFont = love.graphics.newFont('font.ttf', 16)
     bigFont = love.graphics.newFont('font.ttf', 32)
 
     gameState = 'startState'
+
+    sounds = {
+        ['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
+        ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+        ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static'),
+        ['victory_sound'] = love.audio.newSource('sounds/victorySound.wav', 'static')
+    }
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
@@ -54,6 +62,8 @@ function love.keypressed(key)
             gameState = 'startState'
         elseif gameState == 'winState' then
             gameState = 'startState'
+            player1.score = 0
+            player2.score = 0
         else
             gameState = 'playState'
         end
@@ -66,29 +76,36 @@ function love.update(dt)
         ball:update(dt)
         --reflect for the two width
         if (ball.y + ball.dy * dt) < 31 or (ball.y + ball.dy * dt) > 178 then
+            sounds['wall_hit']:play()
             ball.dy = -ball.dy
         end
 
         --the case that the ball is outside the height border
         if ball.x < 0 or ball.x > 320 then
+            sounds['score']:play()
             if playerServe == 1 then
                 player1.score = player1.score + 1
+                playerServe = 2
             else
                 player2.score = player2.score + 1
+                playerServe = 1
+
             end
             gameState = 'playState'
             ball:resetLocation()
-            ball:resetSetup()
+            ball:hostControl(playerServe)
             
         end
 
         --winer state
-        if player1.score == 2 or player2.score == 2 then
+        if player1.score == 9 or player2.score == 9 then
             gameState = 'winState'
+            sounds['victory_sound']:play()
         end
 
         --reflect for the paddle
         if ball:isCollide(player1) then
+            sounds['paddle_hit']:play()
             playerServe = 1
             ball.dx = -ball.dx * 1.1
             if ball.dy > 0 then
@@ -99,6 +116,7 @@ function love.update(dt)
         end
 
         if ball:isCollide(player2) then
+            sounds['paddle_hit']:play()
             ball.dx = -ball.dx * 1.1
             playerServe = 2
             if ball.dy > 0 then
@@ -156,16 +174,6 @@ function love.draw()
 
     if gameState == 'winState' then
         displayWinScreen()
-        -- x = 60
-        -- y = 60
-        -- width = 50
-        -- height = 50
-        -- love.graphics.rectangle('fill', x, y, width, height) -- Vẽ hình chữ nhật
-        -- local text = "Hello" -- Nội dung chữ
-        -- local textX = x + (width - smallFont:getWidth(text)) / 2 -- Tính toán vị trí X cho chữ
-        -- local textY = y + (height - smallFont:getHeight()) / 2 -- Tính toán vị trí Y cho chữ
-
-        -- love.graphics.print(text, textX, textY) -- Viết chữ
     end
 
     push:apply('end')
@@ -211,29 +219,29 @@ function displayWinScreen()
     love.graphics.setColor(117/255, 117/255, 117/255)  
     love.graphics.rectangle("fill", x, y, width, height) 
 
-    
-
     love.graphics.setColor(255/255, 255/255, 180/255) 
 
     love.graphics.setFont(mediumFont)
     local text2 = 'Congratulation!!!'
 
     local text2X = x + (width - mediumFont:getWidth(text2)) / 2 -- Tính toán vị trí X cho chữ
-    local text2Y = y + (height - mediumFont:getHeight()) / 2 -15 -- Tính toán vị trí Y cho chữ
+    local text2Y = y + (height - mediumFont:getHeight()) / 2 - 15 -- Tính toán vị trí Y cho chữ
 
     love.graphics.print(text2, text2X, text2Y)
 
     love.graphics.setFont(smallFont)
-    local text = 'player '..playerServe..' win'
+    local text = 'Player '..playerServe..' win'
     local textX = x + (width - smallFont:getWidth(text)) / 2 -- Tính toán vị trí X cho chữ
     local textY = y + (height - smallFont:getHeight()) / 2
 
     love.graphics.print(text, textX, textY)
 
+    love.graphics.setFont(superSmallFont)
+    local text3 = 'Enter to continue'
+    local text3X = x + (width - superSmallFont:getWidth(text3)) / 2
+    local text3Y = y + (height - superSmallFont:getHeight()) / 2 + 10
 
-
-    
-
+    love.graphics.print(text3, text3X, text3Y)
 
 end
 
