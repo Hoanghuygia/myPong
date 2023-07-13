@@ -31,6 +31,13 @@ function love.load()
 
     gameState = 'startState'
 
+    sounds = {
+        ['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
+        ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+        ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static'),
+        ['victory_sound'] = love.audio.newSource('sounds/victorySound.wav', 'static')
+    }
+
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         resizable = false,
@@ -69,15 +76,20 @@ function love.update(dt)
         ball:update(dt)
         --reflect for the two width
         if (ball.y + ball.dy * dt) < 31 or (ball.y + ball.dy * dt) > 178 then
+            sounds['wall_hit']:play()
             ball.dy = -ball.dy
         end
 
         --the case that the ball is outside the height border
         if ball.x < 0 or ball.x > 320 then
+            sounds['score']:play()
             if playerServe == 1 then
                 player1.score = player1.score + 1
+                playerServe = 2
             else
                 player2.score = player2.score + 1
+                playerServe = 1
+
             end
             gameState = 'playState'
             ball:resetLocation()
@@ -88,10 +100,12 @@ function love.update(dt)
         --winer state
         if player1.score == 9 or player2.score == 9 then
             gameState = 'winState'
+            sounds['victory_sound']:play()
         end
 
         --reflect for the paddle
         if ball:isCollide(player1) then
+            sounds['paddle_hit']:play()
             playerServe = 1
             ball.dx = -ball.dx * 1.1
             if ball.dy > 0 then
@@ -102,6 +116,7 @@ function love.update(dt)
         end
 
         if ball:isCollide(player2) then
+            sounds['paddle_hit']:play()
             ball.dx = -ball.dx * 1.1
             playerServe = 2
             if ball.dy > 0 then
