@@ -13,6 +13,8 @@ VIRTUAL_HEIGHT = 180
 
 PADDLE_SPEED = 200
 
+playerServe = 1
+
 
 
 function love.load()
@@ -81,7 +83,7 @@ function love.update(dt)
         end
 
         --winer state
-        if player1.score == 10 or player2.score == 10 then
+        if player1.score == 2 or player2.score == 2 then
             gameState = 'winState'
         end
 
@@ -153,16 +155,17 @@ function love.draw()
     ball:render()
 
     if gameState == 'winState' then
-        x = 60
-        y = 60
-        width = 50
-        height = 50
-        love.graphics.rectangle('fill', x, y, width, height) -- Vẽ hình chữ nhật
-        local text = "Hello" -- Nội dung chữ
-        local textX = x + (width - smallFont:getWidth(text)) / 2 -- Tính toán vị trí X cho chữ
-        local textY = y + (height - smallFont:getHeight()) / 2 -- Tính toán vị trí Y cho chữ
+        displayWinScreen()
+        -- x = 60
+        -- y = 60
+        -- width = 50
+        -- height = 50
+        -- love.graphics.rectangle('fill', x, y, width, height) -- Vẽ hình chữ nhật
+        -- local text = "Hello" -- Nội dung chữ
+        -- local textX = x + (width - smallFont:getWidth(text)) / 2 -- Tính toán vị trí X cho chữ
+        -- local textY = y + (height - smallFont:getHeight()) / 2 -- Tính toán vị trí Y cho chữ
 
-        love.graphics.print(text, textX, textY) -- Viết chữ
+        -- love.graphics.print(text, textX, textY) -- Viết chữ
     end
 
     push:apply('end')
@@ -198,6 +201,40 @@ function displayScore()
     love.graphics.rectangle('fill', VIRTUAL_WIDTH / 2 - 7, 15, 10, 2)
     love.graphics.print(tostring(player2.score), VIRTUAL_WIDTH / 2 + 10, 2)
     
+end
+
+function displayWinScreen()
+    local x = 85
+    local y = 70
+    local width = 150
+    local height = 80
+    love.graphics.setColor(117/255, 117/255, 117/255)  
+    love.graphics.rectangle("fill", x, y, width, height) 
+
+    
+
+    love.graphics.setColor(255/255, 255/255, 180/255) 
+
+    love.graphics.setFont(mediumFont)
+    local text2 = 'Congratulation!!!'
+
+    local text2X = x + (width - mediumFont:getWidth(text2)) / 2 -- Tính toán vị trí X cho chữ
+    local text2Y = y + (height - mediumFont:getHeight()) / 2 -15 -- Tính toán vị trí Y cho chữ
+
+    love.graphics.print(text2, text2X, text2Y)
+
+    love.graphics.setFont(smallFont)
+    local text = 'player '..playerServe..' win'
+    local textX = x + (width - smallFont:getWidth(text)) / 2 -- Tính toán vị trí X cho chữ
+    local textY = y + (height - smallFont:getHeight()) / 2
+
+    love.graphics.print(text, textX, textY)
+
+
+
+    
+
+
 end
 
 
