@@ -28,6 +28,16 @@ function Ball:resetSetup()
     self.dx = math.random(2) == 1 and math.random(-80, -100) or math.random(80, 100)
 end
 
+function  Ball:hostControl(host)
+    self.dy = math.random(2) == 1 and -100 or 100
+    if host == 1 then
+        self.dx = -math.random(80, 100)
+    else
+        self.dx = math.random(80, 100)
+    end
+    
+end
+
 function Ball:isCollide(paddle)
     if ((self.x - self.radius) > (paddle.x + paddle.width) or (self.x + self.radius < paddle.x)) then
         return false
